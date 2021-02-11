@@ -1,0 +1,41 @@
+
+
+- name: Add mrepositories into the mongo
+  yum_repository:
+    name: MongoDB
+    description: MongoDB YUM repo
+    file: mongodb-org-4.4.repo 
+    baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.4/x86_64/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://www.mongodb.org/static/pgp/server-4.4.asc
+
+
+- name: Installation of mongodb-org
+  yum: 
+    name: mongodb-org
+    state: present
+
+
+
+
+- name: remove mongod.conf file
+  shell: rm -rf /etc/mongod.conf
+
+- name: Copy mongod.conf file 
+  template:
+    src: mongod.conf
+    dest: "/etc/mongod.conf"
+
+
+- name: Enable service mongod
+  ansible.builtin.service:
+    name: mongod
+    enabled: yes
+    
+- name: Start service mongod, if not started
+  ansible.builtin.service:
+    name: mongod
+    state: started
+
+

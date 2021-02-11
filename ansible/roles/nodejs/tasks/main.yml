@@ -1,0 +1,22 @@
+- name: rpm resource
+  shell: curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash - 
+
+- name: Installation of nodejs
+  yum: 
+    name: nodejs
+    state: present
+
+
+- name: Install gcc-c++ make
+  shell: yum install gcc-c++ make
+
+- name: npm cache
+  shell: sudo npm cache clean -f
+
+- name: npm install
+  shell: sudo npm install -g n
+
+- name: n stable
+  shell: sudo n stable
+
+

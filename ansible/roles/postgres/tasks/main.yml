@@ -1,0 +1,24 @@
+- name: Install the repository RPM
+  shell: yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+
+- name: Installation of postgresql13-server
+  yum: 
+    name: postgresql13-server
+    state: present
+
+
+- name: initialize the database and enable automatic start
+  shell: sudo /usr/pgsql-13/bin/postgresql-13-setup initdb
+
+
+- name: Enable service postgresql-13
+  ansible.builtin.service:
+    name: postgresql-13
+    enabled: yes
+    
+- name: Start service postgresql-13, if not started
+  ansible.builtin.service:
+    name: postgresql-13
+    state: started
+

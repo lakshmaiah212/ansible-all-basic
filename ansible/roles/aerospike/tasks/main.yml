@@ -1,0 +1,37 @@
+- name: aerospike url
+  shell: wget -O  aerospike.tgz 'https://www.aerospike.com/download/server/4.6.0.4/artifact/el7'
+  args:
+    chdir: /opt
+
+- name: unarchive aerospike
+  unarchive:
+    src: /opt/aerospike.tgz
+    dest: "/opt"
+
+
+- name: install aerospike
+  shell: ./asinstall
+  args:
+    chdir: aerospike-server-community-4.6.0.4-el7
+
+
+
+- name: remove aerospike.conf file
+  shell: rm -rf /etc/aerospike.conf
+
+- name: Copy aerospike.conf file 
+  template:
+    src: aerospike.conf
+    dest: "/etc/aerospike.conf"
+
+- name: Enable service aerospike
+  ansible.builtin.service:
+    name: aerospike
+    enabled: yes
+    
+- name: Start service aerospike, if not started
+  ansible.builtin.service:
+    name: aerospike
+    state: started
+
+  

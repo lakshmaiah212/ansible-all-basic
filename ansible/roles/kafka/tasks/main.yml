@@ -1,0 +1,97 @@
+- name: install dependency packages
+  shell: yum install wget ca-certificates zip net-tools vim nano tar netcat
+
+- name: Disable RAM Swap - can set to 0 on certain Linux distro
+  shell: echo 'vm.swappiness=1' | sudo tee --append /etc/sysctl.conf
+
+- name: creating data directory
+  shell: mkdir /data
+
+- name: Download kafka 
+  unarchive:
+    src: https://archive.apache.org/dist/kafka/2.6.0/kafka_2.12-2.6.0.tgz
+    dest: "/var/lib"
+    remote_src: yes
+
+- name: rename kafka dir
+  shell: |
+    sudo mv /var/lib/kafka_2.12-2.6.0 kafka
+    sudo chown kafka:kafka /var/lib/kafka
+
+ - name: creating zookeeper dir
+   shell: mkdir /data/zookeeper
+
+- name: remove zookeeper actual properties
+  shell: rm -rf /var/lib/kafka/config/zookeeper.properties
+
+
+- name: zookeeper properties
+  template:
+    src: zookeeper.properties
+    dest: "/var/lib/kafka/config/zookeeper.properties"
+
+
+- name: Zookeeper boot scripts
+  template:
+    src: zookeeper
+    dest: "/etc/init.d/zookeeper"
+
+- name: exection of init scripts
+  shell: |
+    sudo chmod +x /etc/init.d/zookeeper
+    sudo chown root:root /etc/init.d/zookeeper
+    sudo mkdir /data/kafka
+    sudo chown -R kafka:kafka /data/kafka
+
+
+
+- name: start zookeeper service
+  ansible.builtin.service:
+    name: zookeeper
+    state: started
+
+
+- name: remove kafka properties
+  shell: rm -rf /var/lib/kafka/config/server.properties
+
+
+
+
+- name: kafka properties
+  template:
+    src: server.properties
+    dest: "/var/lib/kafka/config/server.properties"
+
+
+- name: kafka bootscript
+  template:
+    src: kafka
+    dest: "/etc/init.d/kafka"
+
+
+- name: kaka execution permissions
+  shell: |
+    sudo chmod +x /etc/init.d/kafka
+    sudo chown kafka:kafka /etc/init.d/kafka
+
+
+- name: start kafka service
+  ansible.builtin.service:
+    name: kafka
+    state: started
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+  
+
+

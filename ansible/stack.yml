@@ -1,0 +1,15 @@
+- name: Deploy all packages for hyppr
+  hosts: all
+  become: yes 
+  roles:
+    - default
+    - nginx
+    - nodejs
+    - elk
+    - kafka
+    - aerospike
+    - mongo
+    - postgres
+    - jenkins
+    - gradle
+    
